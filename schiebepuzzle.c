@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
 
 #define N 4 // zeilen (Horizontalen) = z
 #define M 4 // spalten (Vertikalen)  = s
@@ -222,7 +221,7 @@ void LoesePuzzle(Puzzle *pstAktPuzzle, ZuegeListe **pstZuegeListe, int *mAnzahl,
     printf("\nPuzzle wird gel\x94st");
 
     if (anzahl % K == 1) {
-      eingabeLadebalken = getch();
+      eingabeLadebalken = _getch(); // FIX: Replaced getch() with _getch()
       if (eingabeLadebalken == 'l' || eingabeLadebalken == 'L') {
         prozent += 100.0F /
                    (*mAnzahl *
@@ -242,7 +241,7 @@ void LoesePuzzle(Puzzle *pstAktPuzzle, ZuegeListe **pstZuegeListe, int *mAnzahl,
         }
       }
     } else {
-      eingabeLadebalken = getch();
+      eingabeLadebalken = _getch(); // FIX: Replaced getch() with _getch()
       if (eingabeLadebalken == 'l' || eingabeLadebalken == 'L') {
         prozent += 100.0F / (*wasdAnzahl + (K * *mAnzahl));
         if (prozent > 100)
@@ -284,13 +283,13 @@ int main() {
   Position stDPos;
   ZuegeListe *pstZuegeListe = NULL;
   int iUpdateDisplay = 1;
-  char getch;
+  char getch_char; // Renamed to avoid confusion with the function name
   int m = 1;
   int mAnzahl = 0;
   int wasd = 1;
   int wasdAnzahl = 0;
 
-  srand(time(NULL)); // Initialisierung des Zufallsgenerators
+  srand((unsigned int)time(NULL)); // FIX: Cast time_t to unsigned int
   InitPuzzle(&stAktPuzzle);
 
   do {
@@ -306,11 +305,11 @@ int main() {
       iUpdateDisplay = 0;
     }
 
-    getch = _getch();
+    getch_char = _getch();
     int iUpdatePuzzle = 0;
 
     switch (tolower(
-        getch)) { // tolower = google
+        getch_char)) { // tolower = google
                   // (https://www.programiz.com/c-programming/library-function/ctype.h/tolower)
     case 'a':
       wasdAnzahl = wasd++;
@@ -366,7 +365,7 @@ int main() {
       iUpdateDisplay = 1;
     }
 
-  } while (tolower(getch) != 'v');
+  } while (tolower(getch_char) != 'v');
 
   FreiZuegeListe(&pstZuegeListe);
   return 0;
